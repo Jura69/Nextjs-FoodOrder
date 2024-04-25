@@ -41,3 +41,4 @@ export default function CartProduct({product,onRemove, index}) {
     </div>
   );
 }
+

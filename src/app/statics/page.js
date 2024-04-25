@@ -1,9 +1,13 @@
 "use client";
 import { cartProductPrice } from "@/components/AppContext";
-import UserTabs from "@/components/layout/UserTabs";
+import SectionHeaders from "@/components/layout/SectionHeaders";
 import { useProfile } from "@/components/UseProfile";
-import { dbTimeForHumanMonth } from "@/libs/datetime";
+import { dbTimeForHuman, dbTimeForHumanDay } from "@/libs/datetime";
+import Link from "next/link";
 import { useEffect, useState } from "react";
+import UserTabs from "@/components/layout/UserTabs";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import {
     BarChart,
     LineChart,
@@ -18,77 +22,46 @@ import {
 } from "recharts";
 
 export default function StaticsPage() {
-    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-    const currentYear = new Date().getFullYear();
-    const years = Array.from(
-        { length: currentYear - 2023 + 1 },
-        (_, i) => 2023 + i
-    );
     const [orders, setOrders] = useState([]);
     const [loadingOrders, setLoadingOrders] = useState(true);
     const { loading, data: profile } = useProfile();
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
 
-    useEffect(() => {
-        fetchOrders(selectedYear);
-    }, [selectedYear]);
-
-    function fetchOrders(year) {
-        setLoadingOrders(true);
-        fetch("/api/orders").then((res) => {
-            res.json().then((allOrders) => {
-                const ordersInSelectedYear = allOrders.filter((order) => {
-                    const date = new Date(order.createdAt);
-                    return date.getFullYear() === year;
-                });
-                setOrders(ordersInSelectedYear.reverse());
-                setLoadingOrders(false);
-            });
-        });
-    }
-
-    const handleYearChange = (event) => {
-        const year = parseInt(event.target.value, 10);
-        setSelectedYear(year);
-        fetchOrders(year);
+    const handleFillClick = () => {
+        fetchOrders(startDate, endDate);
     };
 
-    orders.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-
-    const chartData = orders.reduce((acc, order) => {
-        const date = dbTimeForHumanMonth(order.createdAt);
-        const count = order.paid ? 1 : 0;
-        if (!acc[date]) {
-            acc[date] = { date, orders: 0 };
-        }
-        acc[date].orders += count;
-        return acc;
-    }, {});
-
-    const chartDataArray1 = Object.values(chartData);
-
-    const chartData2 = orders.reduce((acc, order) => {
-        const date = new Date(order.createdAt);
-        const monthYear = `${date.getMonth() + 1}/${date.getFullYear()}`;
-
-        let orderTotal = 0;
-        if (order.cartProducts && order.paid) {
-            // Check if the order is paid
-            for (const product of order.cartProducts) {
-                orderTotal += cartProductPrice(product);
-            }
-        }
-
-        if (!acc[monthYear]) {
-            acc[monthYear] = { date: monthYear, revenue: 0 };
-        }
-        acc[monthYear].revenue += orderTotal;
-
-        return acc;
-    }, {});
-
-    // Convert the chartData object to an array
-    const chartDataArray2 = Object.values(chartData2);
-
+    useEffect(() => {
+        fetchOrders();
+    }, []);
+    function fetchOrders(startDate, endDate) {
+        setLoadingOrders(true);
+        fetch('/api/orders').then(res => {
+            res.json().then(allOrders => {
+                let filteredOrders;
+                if (startDate && endDate) {
+                    const start = startDate.getTime(); // convert to timestamp
+                    const end = endDate.getTime(); // convert to timestamp
+                    console.log('startDate:', startDate.toLocaleDateString('en-GB'));
+                    console.log('endDate:', endDate.toLocaleDateString('en-GB'));
+                    filteredOrders = allOrders.filter(order => {
+                        if (!order.createdAt) {
+                            return false; // skip this order if it has no date
+                        }
+                        const orderDateStr = dbTimeForHumanDay(order.createdAt);
+                        const [day, month, year] = orderDateStr.split('/');
+                        const orderDate = new Date(year, month - 1, day).getTime(); // convert to timestamp
+                        return orderDate >= start && orderDate <= end;
+                    });
+                } else {
+                    filteredOrders = allOrders;
+                }
+                setOrders(filteredOrders.reverse());
+                setLoadingOrders(false);
+            })
+        })
+    }
     const totalRevenue = orders.reduce((total, order) => {
         let orderTotal = 0;
         if (order.cartProducts && order.paid) {
@@ -107,18 +80,7 @@ export default function StaticsPage() {
             <UserTabs isAdmin={profile.admin} />
             {loadingOrders && <div>Loading statics...</div>}
 
-            <div className="mt-8 content-center">
-                <div className="mt-8 mx-auto max-w-fit flex flex-row items-center">
-                    <h1 className="mb-2 pr-2">Year: </h1>
-                    <select value={selectedYear} onChange={handleYearChange}>
-                        {years.map((year) => (
-                            <option key={year} value={year}>
-                                {year}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <div className="flex col-3 mx-5 gap-10 justify-center">
+            <div className="flex col-3 mx-5 gap-10 justify-center">
                     <div className="flex-1 p-5 m-5 text-center rounded-md bg-slate-200">
                         <h1>Total Revenue:</h1>
                         <h1 className="p-5" style={{ fontSize: "2em", fontWeight: "bold" }}>
@@ -131,97 +93,57 @@ export default function StaticsPage() {
                             {totalPaidOrders}
                         </h1>
                     </div>
+            </div>
+            <div className="mt-8 content-center">
+                <div className="flex mx-auto gap-2 flex-wrap justify-center">
+                    <div className="flex p-2 items-center border rounded-full">
+                        <h1 className="flex m-2 p-2 ">Start Date: </h1>
+                        <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} dateFormat="dd/MM/yyyy" />
+                    </div>
+                    <div className="flex p-2 items-center border rounded-full">
+                        <h1 className="flex m-2 p-2">End Date: </h1>
+                        <DatePicker selected={endDate} onChange={(date) => setEndDate(date)} dateFormat="dd/MM/yyyy" />
+                    </div>
+                    <div className="mt-4">
+                        <button onClick={handleFillClick} className="bg-primary text-white">Fill</button>
+                    </div>
                 </div>
-                <div className="mx-auto text-center bg-slate-200 rounded-lg content-center">
-                    <BarChart
-                        width={720}
-                        height={400}
-                        data={chartDataArray1}
-                        margin={{
-                            top: 20,
-                            right: 130,
-                            left: 20,
-                            bottom: 20,
-                        }}
-                    >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="date">
-                            <Label
-                                value="Month/Year"
-                                offset={-10}
-                                position="insideBottom"
-                                dy={-45}
-                                dx={320}
-                            />
-                        </XAxis>
-                        <YAxis>
-                            <Label
-                                value="Orders"
-                                offset={15}
-                                angle={0}
-                                position="insideLeft"
-                                dy={-175}
-                                dx={-15}
-                            />
-                        </YAxis>
-                        <Tooltip />
-                        <Legend
-                            verticalAlign="top"
-                            align="end"
-                            wrapperStyle={{ fontSize: "18px" }}
-                        />
-                        <Bar dataKey="orders" fill="#8884d8" />
-                    </BarChart>
-                    <h1 className="mx-auto py-5">Orders Over Time</h1>
-                </div>
-
-                <div className="mt-10 mx-auto text-center bg-slate-200 rounded-lg">
-                    <LineChart
-                        width={720}
-                        height={400}
-                        data={chartDataArray2}
-                        margin={{
-                            top: 20,
-                            right: 130,
-                            left: 20,
-                            bottom: 20,
-                        }}
-                    >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="date">
-                            <Label
-                                value="Month/Year"
-                                offset={-10}
-                                position="insideBottom"
-                                dy={-45}
-                                dx={320}
-                            />
-                        </XAxis>
-                        <YAxis>
-                            <Label
-                                value="Revenue (USD)"
-                                offset={15}
-                                angle={0}
-                                position="insideLeft"
-                                dy={-175}
-                                dx={-15}
-                            />
-                        </YAxis>
-                        <Tooltip />
-                        <Legend
-                            verticalAlign="top"
-                            align="end"
-                            wrapperStyle={{ fontSize: "18px" }}
-                        />
-                        <Line
-                            type="monotone"
-                            dataKey="revenue"
-                            stroke="#8884d8"
-                            activeDot={{ r: 8 }}
-                        />
-                    </LineChart>
-                    <h1 className="mx-auto py-5">Revenue Over Time</h1>
-                </div>
+            </div>
+            <div className="mt-8">
+                {orders?.length > 0 ? (
+                    orders.map(order => (
+                    <div
+                        key={order._id}
+                        className="bg-gray-100 mb-2 p-4 rounded-lg flex flex-col md:flex-row items-center gap-6">
+                        <div className="grow flex flex-col md:flex-row items-center gap-6">
+                            <div>
+                                <div className={
+                                    (order.paid ? 'bg-green-500' : 'bg-red-400')
+                                    + ' p-2 rounded-md text-white w-24 text-center'
+                                }>
+                                    {order.paid ? 'Paid' : 'Not paid'}
+                                </div>
+                            </div>
+                            <div className="grow">
+                                <div className="flex gap-2 items-center mb-1">
+                                    <div className="grow">{order.userEmail}</div>
+                                    <div className="text-gray-500 text-sm">{dbTimeForHuman(order.createdAt)}</div>
+                                </div>
+                                <div className="text-gray-500 text-xs">
+                                    {order.cartProducts.map(p => p.name).join(', ')}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="justify-end flex gap-2 items-center whitespace-nowrap">
+                            <Link href={"/orders/" + order._id} className="button">
+                                Show order
+                            </Link>
+                        </div>
+                    </div>
+                ))
+                ) : (
+                    <div>No orders found</div>
+                )}
             </div>
         </section>
     );

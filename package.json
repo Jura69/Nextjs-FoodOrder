@@ -19,6 +19,7 @@
     "next": "14.0.0",
     "next-auth": "^4.24.4",
     "react": "^18",
+    "react-datepicker": "^6.9.0",
     "react-dom": "^18",
     "react-flying-item": "^1.1.2",
     "react-hot-toast": "^2.4.1",
