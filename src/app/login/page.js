@@ -1,7 +1,7 @@
 'use client';
-import {signIn} from "next-auth/react";
+import { signIn } from "next-auth/react";
 import Image from "next/image";
-import {useState} from "react";
+import { useState } from "react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -12,7 +12,7 @@ export default function LoginPage() {
     ev.preventDefault();
     setLoginInProgress(true);
 
-    await signIn('credentials', {email, password, callbackUrl: '/'});
+    await signIn('credentials', { email, password, callbackUrl: '/' });
 
     setLoginInProgress(false);
   }
@@ -23,20 +23,29 @@ export default function LoginPage() {
       </h1>
       <form className="max-w-xs mx-auto" onSubmit={handleFormSubmit}>
         <input type="email" name="email" placeholder="email" value={email}
-               disabled={loginInProgress}
-               onChange={ev => setEmail(ev.target.value)} />
+          disabled
+          onChange={ev => setEmail(ev.target.value)} />
         <input type="password" name="password" placeholder="password" value={password}
-               disabled={loginInProgress}
-               onChange={ev => setPassword(ev.target.value)}/>
-        <button disabled={loginInProgress} type="submit">Login</button>
+          disabled
+          onChange={ev => setPassword(ev.target.value)} /> 
+        <button disabled type="submit-1">Login</button>
         <div className="my-4 text-center text-gray-500">
           or login with provider
         </div>
-        <button type="button" onClick={() => signIn('google', {callbackUrl: '/'})}
-                className="flex gap-4 justify-center">
-          <Image src={'/google.png'} alt={''} width={24} height={24} />
-          Login with google
-        </button>
+        <div>
+          <button type="button" onClick={() => signIn('google', { callbackUrl: '/' })}
+            className="flex gap-4 justify-center">
+            <Image src={'/google.png'} alt={''} width={24} height={24} />
+            Login with Google
+          </button>
+        </div>
+        <div className="mt-4">
+          <button disabled type="button" onClick={() => signIn('google', { callbackUrl: '/' })}
+            className="flex gap-4 bg-slate-200 justify-center text-slate-500">
+            <Image src={'/facebook.png'} alt={''} width={24} height={24} />
+            Login with FaceBook
+          </button>
+        </div>
       </form>
     </section>
   );
