@@ -1,8 +1,10 @@
 'use client';
 import Link from "next/link";
 import {usePathname} from "next/navigation";
+import {useTranslations} from "next-intl";
 
 export default function UserTabs({isAdmin}) {
+  const t = useTranslations('components.layout.UserTabs');
   const path = usePathname();
   return (
     <div className="flex mx-auto gap-2 tabs justify-center flex-wrap">
@@ -10,7 +12,7 @@ export default function UserTabs({isAdmin}) {
         className={path === '/profile' ? 'active' : ''}
         href={'/profile'}
       >
-        Profile
+        {t('profile')}
       </Link>
       {isAdmin && (
         <>
@@ -18,25 +20,25 @@ export default function UserTabs({isAdmin}) {
             href={'/categories'}
             className={path === '/categories' ? 'active' : ''}
           >
-            Categories
+            {t('categories')}
           </Link>
           <Link
             href={'/menu-items'}
             className={path.includes('menu-items') ? 'active' : ''}
           >
-            Menu Items
+            {t('menu_items')}
           </Link>
           <Link
             className={path.includes('/users') ? 'active' : ''}
             href={'/users'}
           >
-            Users
+            {t('users')}
           </Link>
           <Link
             className={path.includes('/statics') ? 'active' : ''}
             href={'/statics'}
           >
-            Statics
+            {t('statics')}
           </Link>
         </>
       )}
@@ -44,7 +46,7 @@ export default function UserTabs({isAdmin}) {
         className={path === '/orders' ? 'active' : ''}
         href={'/orders'}
       >
-        Orders
+        {t('orders')}
       </Link>
     </div>
   );

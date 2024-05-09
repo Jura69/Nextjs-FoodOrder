@@ -1,13 +1,16 @@
+import { useTranslations } from 'next-intl';
+
 export default function AddressInputs({addressProps,setAddressProp,disabled=false}) {
+  const t = useTranslations('components.layout.AddressInputs');
   const {phone, streetAddress, postalCode, city, country} = addressProps;
   return (
     <>
-      <label>Phone</label>
+      <label>{t('phone')}</label>
       <input
         disabled={disabled}
         type="tel" placeholder="Phone number"
         value={phone || ''} onChange={ev => setAddressProp('phone', ev.target.value)} />
-      <label>Street address</label>
+      <label>{t('street_address')}</label>
       <input
         disabled={disabled}
         type="text" placeholder="Street address"
@@ -15,7 +18,7 @@ export default function AddressInputs({addressProps,setAddressProp,disabled=fals
       />
       <div className="grid grid-cols-2 gap-2">
         <div>
-          <label>Postal code</label>
+          <label>{t('postal_code')}</label>
           <input
             disabled={disabled}
             type="text" placeholder="Postal code"
@@ -23,7 +26,7 @@ export default function AddressInputs({addressProps,setAddressProp,disabled=fals
           />
         </div>
         <div>
-          <label>City</label>
+          <label>{t('city')}</label>
           <input
             disabled={disabled}
             type="text" placeholder="City"
@@ -31,7 +34,7 @@ export default function AddressInputs({addressProps,setAddressProp,disabled=fals
           />
         </div>
       </div>
-      <label>Country</label>
+      <label>{t('country')}</label>
       <input
         disabled={disabled}
         type="text" placeholder="Country"

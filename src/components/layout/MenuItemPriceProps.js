@@ -3,8 +3,10 @@ import ChevronUp from "@/components/icons/ChevronUp";
 import Plus from "@/components/icons/Plus";
 import Trash from "@/components/icons/Trash";
 import {useState} from "react";
+import {useTranslations} from "next-intl";
 
 export default function MenuItemPriceProps({name,addLabel,props,setProps}) {
+  const t = useTranslations('components.layout.MenuItemPriceProps');
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -46,7 +48,7 @@ export default function MenuItemPriceProps({name,addLabel,props,setProps}) {
         {props?.length > 0 && props.map((size,index) => (
           <div key={index} className="flex items-end gap-2">
             <div>
-              <label>Name</label>
+              <label>{t('name')}</label>
               <input type="text"
                      placeholder="Size name"
                      value={size.name}
@@ -54,7 +56,7 @@ export default function MenuItemPriceProps({name,addLabel,props,setProps}) {
               />
             </div>
             <div>
-              <label>Extra price</label>
+              <label>{t('extra_price')}</label>
               <input type="text" placeholder="Extra price"
                      value={size.price}
                      onChange={ev => editProp(ev, index, 'price')}

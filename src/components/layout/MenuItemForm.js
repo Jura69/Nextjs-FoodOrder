@@ -3,8 +3,10 @@ import Trash from "@/components/icons/Trash";
 import EditableImage from "@/components/layout/EditableImage";
 import MenuItemPriceProps from "@/components/layout/MenuItemPriceProps";
 import {useEffect, useState} from "react";
+import {useTranslations} from "next-intl";
 
 export default function MenuItemForm({onSubmit,menuItem}) {
+  const t = useTranslations('components.layout.MenuItemForm');
   const [image, setImage] = useState(menuItem?.image || '');
   const [name, setName] = useState(menuItem?.name || '');
   const [description, setDescription] = useState(menuItem?.description || '');
@@ -40,39 +42,39 @@ export default function MenuItemForm({onSubmit,menuItem}) {
           <EditableImage link={image} setLink={setImage} />
         </div>
         <div className="grow">
-          <label>Item name</label>
+          <label>{t('item_name')}</label>
           <input
             type="text"
             value={name}
             onChange={ev => setName(ev.target.value)}
           />
-          <label>Description</label>
+          <label>{t('description')}</label>
           <input
             type="text"
             value={description}
             onChange={ev => setDescription(ev.target.value)}
           />
-          <label>Category</label>
+          <label>{t('category')}</label>
           <select value={category} onChange={ev => setCategory(ev.target.value)}>
             {categories?.length > 0 && categories.map(c => (
               <option key={c._id} value={c._id}>{c.name}</option>
             ))}
           </select>
-          <label>Base price</label>
+          <label>{t('base_price')}</label>
           <input
             type="text"
             value={basePrice}
             onChange={ev => setBasePrice(ev.target.value)}
           />
-          <MenuItemPriceProps name={'Sizes'}
-                              addLabel={'Add item size'}
+          <MenuItemPriceProps name={t('sizes')}
+                              addLabel={t('add_item_sizes')}
                               props={sizes}
                               setProps={setSizes} />
-          <MenuItemPriceProps name={'Extra ingredients'}
-                              addLabel={'Add ingredients prices'}
+          <MenuItemPriceProps name={t('extra_ingredients')}
+                              addLabel={t('add_ingredients_prices')}
                               props={extraIngredientPrices}
                               setProps={setExtraIngredientPrices}/>
-          <button type="submit">Save</button>
+          <button type="submit">{t('save')}</button>
         </div>
       </div>
     </form>
