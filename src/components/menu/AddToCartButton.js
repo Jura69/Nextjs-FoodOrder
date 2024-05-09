@@ -4,10 +4,11 @@ import { useTranslations } from 'next-intl';
 export default function AddToCartButton({
   hasSizesOrExtras, onClick, basePrice, image
 }) 
+
 {
-  if (!hasSizesOrExtras) {
   const t = useTranslations('components.menu.AddToCartButton');
 
+  if (!hasSizesOrExtras) {
     return (
       <div className="flying-button-parent mt-4">
         <FlyingButton
@@ -21,8 +22,6 @@ export default function AddToCartButton({
       </div>
     );
   }
-  const t = useTranslations('components.menu.AddToCartButton');
-
   return (
     <button
       type="button"
