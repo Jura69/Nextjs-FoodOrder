@@ -9,8 +9,11 @@ import Link from "next/link";
 import {redirect} from "next/navigation";
 import {useState} from "react";
 import toast from "react-hot-toast";
+import {useTranslations} from "next-intl";
 
 export default function NewMenuItemPage() {
+
+  const t = useTranslations('menu-items.new');
 
   const [redirectToItems, setRedirectToItems] = useState(false);
   const {loading, data} = useProfile();
@@ -56,7 +59,7 @@ export default function NewMenuItemPage() {
       <div className="max-w-2xl mx-auto mt-8">
         <Link href={'/menu-items'} className="button">
           <Left />
-          <span>Show all menu items</span>
+          <span>{t('show_all')}</span>
         </Link>
       </div>
       <MenuItemForm menuItem={null} onSubmit={handleFormSubmit} />

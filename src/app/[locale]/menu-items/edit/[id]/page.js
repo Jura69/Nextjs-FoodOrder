@@ -9,8 +9,10 @@ import Link from "next/link";
 import {redirect, useParams} from "next/navigation";
 import {useEffect, useState} from "react";
 import toast from "react-hot-toast";
+import {useTranslations} from "next-intl";
 
 export default function EditMenuItemPage() {
+  const t = useTranslations('menu-items.edit');
 
   const {id} = useParams();
 
@@ -89,14 +91,14 @@ export default function EditMenuItemPage() {
       <div className="max-w-2xl mx-auto mt-8">
         <Link href={'/menu-items'} className="button">
           <Left />
-          <span>Show all menu items</span>
+          <span>{t('show_all')}</span>
         </Link>
       </div>
       <MenuItemForm menuItem={menuItem} onSubmit={handleFormSubmit} />
       <div className="max-w-md mx-auto mt-2">
         <div className="max-w-xs ml-auto pl-4">
           <DeleteButton
-            label="Delete this menu item"
+            label={t('delete')}
             onDelete={handleDeleteClick}
           />
         </div>

@@ -5,9 +5,10 @@ import {useProfile} from "@/components/UseProfile";
 import Image from "next/image";
 import Link from "next/link";
 import {useEffect, useState} from "react";
+import {useTranslations} from "next-intl";
 
 export default function MenuItemsPage() {
-
+  const t = useTranslations('menu-items.page');
   const [menuItems, setMenuItems] = useState([]);
   const {loading, data} = useProfile();
 
@@ -34,12 +35,12 @@ export default function MenuItemsPage() {
         <Link
           className="button flex"
           href={'/menu-items/new'}>
-          <span>Crete new menu item</span>
+          <span>{t('create_new')}</span>
           <Right />
         </Link>
       </div>
       <div>
-        <h2 className="text-sm text-gray-500 mt-8">Edit menu item:</h2>
+        <h2 className="text-sm text-gray-500 mt-8">{t('edit_menu')}</h2>
         <div className="grid grid-cols-3 gap-2">
           {menuItems?.length > 0 && menuItems.map(item => (
             <Link

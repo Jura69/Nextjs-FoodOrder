@@ -3,8 +3,10 @@ import AddressInputs from "@/components/layout/AddressInputs";
 import EditableImage from "@/components/layout/EditableImage";
 import {useProfile} from "@/components/UseProfile";
 import {useState} from "react";
+import {useTranslations} from "next-intl";
 
 export default function UserForm({user,onSave}) {
+  const t = useTranslations('components.layout.UserForm');
   const [userName, setUserName] = useState(user?.name || '');
   const [image, setImage] = useState(user?.image || '');
   const [phone, setPhone] = useState(user?.phone || '');
@@ -40,7 +42,7 @@ export default function UserForm({user,onSave}) {
         }
       >
         <label>
-          First and last name
+          {t('name')}
         </label>
         <input
           type="text" placeholder="First and last name"

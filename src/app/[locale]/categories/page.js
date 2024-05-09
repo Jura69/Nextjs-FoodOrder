@@ -4,8 +4,10 @@ import UserTabs from "@/components/layout/UserTabs";
 import {useEffect, useState} from "react";
 import {useProfile} from "@/components/UseProfile";
 import toast from "react-hot-toast";
+import {useTranslations} from "next-intl";  
 
 export default function CategoriesPage() {
+  const t = useTranslations('categories');
 
   const [categoryName, setCategoryName] = useState('');
   const [categories, setCategories] = useState([]);
@@ -89,7 +91,7 @@ export default function CategoriesPage() {
         <div className="flex gap-2 items-end">
           <div className="grow">
             <label>
-              {editedCategory ? 'Update category' : 'New category name'}
+              {editedCategory ? <>{t('update_cat')}</> : <>{t('new_cat')}</> }
               {editedCategory && (
                 <>: <b>{editedCategory.name}</b></>
               )}
@@ -101,7 +103,7 @@ export default function CategoriesPage() {
           </div>
           <div className="pb-2 flex gap-2">
             <button className="border border-primary" type="submit">
-              {editedCategory ? 'Update' : 'Create'}
+              {editedCategory ? <>{t('update')}</>  : <>{t('create')}</> }
             </button>
             <button
               type="button"
@@ -109,7 +111,7 @@ export default function CategoriesPage() {
                 setEditedCategory(null);
                 setCategoryName('');
               }}>
-              Cancel
+              {t('cancel')}
             </button>
           </div>
         </div>
@@ -130,10 +132,10 @@ export default function CategoriesPage() {
                         setCategoryName(c.name);
                       }}
               >
-                Edit
+                {t('edit')}
               </button>
               <DeleteButton
-                label="Delete"
+                label={t('delete')}
                 onDelete={() => handleDeleteClick(c._id)} />
             </div>
           </div>

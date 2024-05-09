@@ -4,8 +4,11 @@ import Image from "next/image";
 import { useContext, useState } from "react";
 import FlyingButton from "react-flying-item";
 import toast from "react-hot-toast";
+import { useTranslations } from "next-intl";
 
 export default function MenuItem(menuItem) {
+  const t = useTranslations('components.menu.MenuItem');
+
   const {
     image, name, description, basePrice,
     sizes, extraIngredientPrices,
@@ -111,13 +114,13 @@ export default function MenuItem(menuItem) {
                 src={image}>
                 <div className="primary sticky bottom-2"
                   onClick={handleAddToCartButtonClick}>
-                  Add to cart ${selectedPrice}
+                  {t('add')} ${selectedPrice}
                 </div>
               </FlyingButton>
               <button
                 className="mt-2"
                 onClick={() => setShowPopup(false)}>
-                Cancel
+                {t('cancel')}
               </button>
             </div>
           </div>

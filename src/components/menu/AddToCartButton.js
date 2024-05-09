@@ -4,7 +4,6 @@ import { useTranslations } from 'next-intl';
 export default function AddToCartButton({
   hasSizesOrExtras, onClick, basePrice, image
 }) 
-
 {
   const t = useTranslations('components.menu.AddToCartButton');
 
