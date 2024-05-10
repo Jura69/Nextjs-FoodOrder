@@ -48,7 +48,10 @@ export default function CartPage() {
   async function proceedToCheckout(ev) {
     ev.preventDefault();
     // address and shopping cart products
-
+    if ((!address.phone || !address.phone.trim()) || (!address.streetAddress || !address.streetAddress.trim())) {
+      toast.error('Phone and Street Address cannot be empty');
+      return;
+    }
     const promise = new Promise((resolve, reject) => {
       fetch('/api/checkout', {
         method: 'POST',

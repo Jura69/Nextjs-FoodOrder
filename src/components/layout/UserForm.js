@@ -1,11 +1,11 @@
 'use client';
 import AddressInputs from "@/components/layout/AddressInputs";
 import EditableImage from "@/components/layout/EditableImage";
-import {useProfile} from "@/components/UseProfile";
-import {useState} from "react";
-import {useTranslations} from "next-intl";
+import { useProfile } from "@/components/UseProfile";
+import { useState } from "react";
+import { useTranslations } from "next-intl";
 
-export default function UserForm({user,onSave}) {
+export default function UserForm({ user, onSave }) {
   const t = useTranslations('components.layout.UserForm');
   const [userName, setUserName] = useState(user?.name || '');
   const [image, setImage] = useState(user?.image || '');
@@ -15,7 +15,10 @@ export default function UserForm({user,onSave}) {
   const [city, setCity] = useState(user?.city || '');
   const [country, setCountry] = useState(user?.country || '');
   const [admin, setAdmin] = useState(user?.admin || false);
-  const {data:loggedInUserData} = useProfile();
+  const { data: loggedInUserData } = useProfile();
+  const [isNumeric, setIsNumeric] = useState(false);
+  const [isUserNameEmpty, setIsUserNameEmpty] = useState(false);
+
 
   function handleAddressChange(propName, value) {
     if (propName === 'phone') setPhone(value);
@@ -24,7 +27,6 @@ export default function UserForm({user,onSave}) {
     if (propName === 'city') setCity(value);
     if (propName === 'country') setCountry(value);
   }
-
   return (
     <div className="md:flex gap-4">
       <div>
@@ -34,20 +36,44 @@ export default function UserForm({user,onSave}) {
       </div>
       <form
         className="grow"
-        onSubmit={ev =>
-          onSave(ev, {
-            name:userName, image, phone, admin,
-            streetAddress, city, country, postalCode,
-          })
-        }
+        onSubmit={ev => {
+          if (userName.trim() === '') {
+            ev.preventDefault();
+            setIsUserNameEmpty(true);
+          } else {
+            onSave(ev, {
+              name: userName, image, phone, admin,
+              streetAddress, city, country, postalCode,
+            });
+          }
+        }}
       >
         <label>
           {t('name')}
         </label>
         <input
-          type="text" placeholder="First and last name"
-          value={userName} onChange={ev => setUserName(ev.target.value)}
+          type="text"
+          placeholder="First and last name"
+          value={userName}
+          onChange={ev => {
+            const value = ev.target.value;
+            if (/\d/.test(value)) {
+              setIsNumeric(true);
+            } else {
+              setIsNumeric(false);
+              if (value.length <= 30 && /^[\p{L}\s]*$/u.test(value)) {
+                setUserName(value);
+              }
+            }
+            if (value.length > 0) {
+              setIsUserNameEmpty(false);
+            }
+          }}
         />
+        {isNumeric &&
+          <p className="text-red-500">Please do not enter numbers.</p>}
+        {isUserNameEmpty &&
+          <p className="text-red-500">Please enter a name.</p>}
         <label>Email</label>
         <input
           type="email"
@@ -56,7 +82,7 @@ export default function UserForm({user,onSave}) {
           placeholder={'email'}
         />
         <AddressInputs
-          addressProps={{phone, streetAddress, postalCode, city, country}}
+          addressProps={{ phone, streetAddress, postalCode, city, country }}
           setAddressProp={handleAddressChange}
         />
         {loggedInUserData.admin && (
