@@ -1,8 +1,10 @@
 import {cartProductPrice} from "@/components/AppContext";
 import Trash from "@/components/icons/Trash";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 export default function CartProduct({product,onRemove, index}) {
+  const t = useTranslations('components.menu.CartProduct');
   return (
     <div className="flex items-center gap-4 border-b py-4">
       <div className="w-24">
@@ -14,7 +16,7 @@ export default function CartProduct({product,onRemove, index}) {
         </h3>
         {product.size && (
           <div className="text-sm">
-            Size: <span>{product.size.name}</span>
+            {t('size')} <span>{product.size.name}</span>
           </div>
         )}
         {product.extras?.length > 0 && (

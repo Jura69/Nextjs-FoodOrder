@@ -7,6 +7,7 @@ import {Link} from "../../navigation";
 import { useContext, useState, useEffect } from "react";
 import { useRouter, usePathname } from '@/navigation';
 import { useTranslations } from 'next-intl';
+import LanguageChanger from './LanguageChange';
 
 function AuthLinks({ status, userName}) {
   const t = useTranslations('components.layout.Header');
@@ -39,19 +40,7 @@ function AuthLinks({ status, userName}) {
 }
 
 export default function Header() {
-  const [locale, setLocale] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('locale') || 'en';
-    }
-    return 'en';
-  });
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('locale', locale);
-    }
-  }, [locale]);
-  
   const t = useTranslations('components.layout.Header');
   const session = useSession();
   const status = session?.status;
@@ -62,15 +51,6 @@ export default function Header() {
   if (userName && userName.includes(' ')) {
     userName = userName.split(' ')[0];
   }
-
-  const router = useRouter();
-  const pathname = usePathname();
-
-  const handleChange = e => {
-    router.push(pathname, { locale: e.target.value });
-    setLocale(e.target.value);
-  };
-
 
   return (
     <header>
@@ -102,10 +82,7 @@ export default function Header() {
           <Link href={'/menu'}>Menu</Link>
           <Link href={'/#about'}>{t('about')}</Link>
           <Link href={'/#contact'}>{t('contact')}</Link>
-          <select value={locale} onChange={handleChange}>
-            <option value="en">English</option>
-            <option value="vi">Tiếng Việt</option>
-          </select>
+          <LanguageChanger />
           <AuthLinks status={status} userName={userName} />
         </div>
       )}
@@ -118,13 +95,10 @@ export default function Header() {
           <Link href={'/menu'}>Menu</Link>
           <Link href={'/#about'}>{t('about')}</Link>
           <Link href={'/#contact'}>{t('contact')}</Link>
-          <select value={locale} onChange={handleChange}>
-            <option value="en">English</option>
-            <option value="vi">Tiếng Việt</option>
-          </select>
+          <LanguageChanger />
         </nav>
         <nav className="flex items-center gap-4 text-gray-500 font-semibold">
-          <AuthLinks status={status} userName={userName} locale={locale} />
+          <AuthLinks status={status} userName={userName}/>
           <Link href={'/cart'} className="relative">
             <ShoppingCart />
             {cartProducts?.length > 0 && (
