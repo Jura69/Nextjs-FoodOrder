@@ -115,13 +115,13 @@ export default function CartPage() {
           </div>
         </div>
         <div className="bg-gray-100 p-4 rounded-lg">
-          <h2>Checkout</h2>
+          <h2>{t('checkout')}</h2>
           <form onSubmit={proceedToCheckout}>
             <AddressInputs
               addressProps={address}
               setAddressProp={handleAddressChange}
             />
-            <button type="submit">Pay ${subtotal+5}</button>
+            <button type="submit">{t('pay')} ${subtotal+5}</button>
           </form>
         </div>
       </div>

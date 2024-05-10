@@ -76,7 +76,7 @@ export default function MenuItem(menuItem) {
               </p>
               {sizes?.length > 0 && (
                 <div className="py-2">
-                  <h3 className="text-center text-gray-700">Pick your size</h3>
+                  <h3 className="text-center text-gray-700">{t('pick_size')}</h3>
                   {sizes.map(size => (
                     <label
                       key={size._id}
