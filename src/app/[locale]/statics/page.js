@@ -8,18 +8,6 @@ import { useEffect, useState } from "react";
 import UserTabs from "@/components/layout/UserTabs";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import {
-  BarChart,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  Label,
-  Bar,
-} from "recharts";
 import { useTranslations } from "next-intl";
 
 export default function StaticsPage() {
@@ -44,12 +32,12 @@ export default function StaticsPage() {
         let filteredOrders;
         if (startDate && endDate) {
           const start = startDate.getTime(); // convert to timestamp
-          const end = endDate.getTime(); // convert to timestamp
+          const end = endDate.getTime();
           console.log("startDate:", startDate.toLocaleDateString("en-GB"));
           console.log("endDate:", endDate.toLocaleDateString("en-GB"));
           filteredOrders = allOrders.filter((order) => {
             if (!order.createdAt) {
-              return false; // skip this order if it has no date
+              return false;
             }
             const orderDateStr = dbTimeForHumanDay(order.createdAt);
             const [day, month, year] = orderDateStr.split("/");

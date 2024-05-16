@@ -42,7 +42,7 @@ export default function LoginPage() {
           </button>
         </div>
         <div className="mt-4">
-          <button disabled type="button" onClick={() => signIn('google', { callbackUrl: '/' })}
+          <button disabled type="button" onClick={() => signIn('google', 1)}
             className="flex gap-4 bg-slate-200 justify-center text-slate-500">
             <Image src={'/facebook.png'} alt={''} width={24} height={24} />
             {t('facebook')}

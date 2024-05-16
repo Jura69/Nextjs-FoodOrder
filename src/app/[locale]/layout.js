@@ -24,7 +24,7 @@ export default function RootLayout({ children, params: { locale } }) {
   return (
     <html lang={locale} className="scroll-smooth">
       <head>
-        <meta charset="UTF-8"/>
+        <meta charSet="UTF-8"/>
       </head>
       <NextIntlClientProvider locale={locale} messages={messages}>
         <body className={roboto.className}>
