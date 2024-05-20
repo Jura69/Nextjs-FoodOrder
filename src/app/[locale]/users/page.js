@@ -43,7 +43,7 @@ export default function UsersPage() {
                 </div>
                 <span className="text-gray-500">{user.email}</span>
               </div>
-              <div>
+              <div className="whitespace-nowrap">
                 <Link className="button" href={"/users/" + user._id}>
                   {t("edit")}
                 </Link>

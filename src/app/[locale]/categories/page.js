@@ -101,7 +101,7 @@ export default function CategoriesPage() {
                    onChange={ev => setCategoryName(ev.target.value)}
             />
           </div>
-          <div className="pb-2 flex gap-2">
+          <div className="whitespace-nowrap pb-2 flex gap-2">
             <button className="border border-primary" type="submit">
               {editedCategory ? <>{t('update')}</>  : <>{t('create')}</> }
             </button>
@@ -125,7 +125,7 @@ export default function CategoriesPage() {
             <div className="grow">
               {c.name}
             </div>
-            <div className="flex gap-1">
+            <div className="whitespace-nowrap flex gap-1">
               <button type="button"
                       onClick={() => {
                         setEditedCategory(c);

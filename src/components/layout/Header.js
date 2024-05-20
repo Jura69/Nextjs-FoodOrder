@@ -91,10 +91,10 @@ export default function Header() {
           <Link className="text-primary font-semibold text-2xl" href={'/'}>
             FoodLover
           </Link>
-          <Link href={'/'}>{t('home')}</Link>
-          <Link href={'/menu'}>Menu</Link>
-          <Link href={'/#about'}>{t('about')}</Link>
-          <Link href={'/#contact'}>{t('contact')}</Link>
+          <Link className="whitespace-nowrap" href={'/'}>{t('home')}</Link>
+          <Link className="whitespace-nowrap" href={'/menu'}>Menu</Link>
+          <Link className="whitespace-nowrap" href={'/#about'}>{t('about')}</Link>
+          <Link className="whitespace-nowrap" href={'/#contact'}>{t('contact')}</Link>
           <LanguageChanger />
         </nav>
         <nav className="flex items-center gap-4 text-gray-500 font-semibold">

@@ -4,14 +4,8 @@ import { useEffect, useState } from 'react';
 export default function LanguageChanger({ locale }) {
     const router = useRouter();
     const pathname = usePathname();
-    const [selectedLocale, setSelectedLocale] = useState(locale);
-
-    useEffect(() => {
-        const storedLocale = localStorage.getItem('locale');
-        if (storedLocale) {
-            setSelectedLocale(storedLocale);
-        }
-    }, []);
+    const storedLocale = localStorage.getItem('locale');
+    const [selectedLocale, setSelectedLocale] = useState(storedLocale || locale);
 
     useEffect(() => {
         localStorage.setItem('locale', selectedLocale);

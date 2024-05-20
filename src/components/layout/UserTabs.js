@@ -9,7 +9,7 @@ export default function UserTabs({isAdmin}) {
   return (
     <div className="flex mx-auto gap-2 tabs justify-center flex-wrap">
       <Link
-        className={path === '/profile' ? 'active' : ''}
+        className={path.includes ('/profile') ? 'active' : ''}
         href={'/profile'}
       >
         {t('profile')}
@@ -18,7 +18,7 @@ export default function UserTabs({isAdmin}) {
         <>
           <Link
             href={'/categories'}
-            className={path === '/categories' ? 'active' : ''}
+            className={path.includes ('/categories') ? 'active' : ''}
           >
             {t('categories')}
           </Link>
@@ -43,7 +43,7 @@ export default function UserTabs({isAdmin}) {
         </>
       )}
       <Link
-        className={path === '/orders' ? 'active' : ''}
+        className={path.includes ('/orders') ? 'active' : ''}
         href={'/orders'}
       >
         {t('orders')}

@@ -6,6 +6,9 @@ import { dbTimeForHuman } from "@/libs/datetime";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import DeleteButton from "@/components/DeleteButton";
+import toast from "react-hot-toast";
+import { cartProductPrice } from "@/components/AppContext";
 
 export default function OrdersPage() {
   const t = useTranslations("orders.page");
@@ -27,8 +30,37 @@ export default function OrdersPage() {
     });
   }
 
+  function calculateOrderTotal(order) {
+    let subtotal = 0;
+    for (const product of order.cartProducts) {
+      subtotal += cartProductPrice(product);
+    }
+    return subtotal + 5; // 5 is the delivery fee
+  }
+
+  async function handleDeleteClick(_id) {
+    const promise = new Promise(async (resolve, reject) => {
+      const response = await fetch('/api/orders?_id='+_id, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        resolve();
+      } else {
+        reject();
+      }
+    });
+  
+    await toast.promise(promise, {
+      loading: 'Deleting...',
+      success: 'Deleted',
+      error: 'Error',
+    });
+  
+    fetchOrders();
+  }
+
   return (
-    <section className="mt-8 max-w-2xl mx-auto">
+    <section className="mt-8 max-w-3xl mx-auto">
       <UserTabs isAdmin={profile.admin} />
       <div className="mt-8">
         {loadingOrders && <div>Loading orders...</div>}
@@ -57,7 +89,7 @@ export default function OrdersPage() {
                     </div>
                   </div>
                   <div className="text-gray-500 text-xs">
-                    {order.cartProducts.map((p) => p.name).join(", ")}
+                  {t("total")} ${calculateOrderTotal(order)}
                   </div>
                 </div>
               </div>
@@ -65,6 +97,12 @@ export default function OrdersPage() {
                 <Link href={"/orders/" + order._id} className="button">
                   {t("view_order")}
                 </Link>
+                <div>
+              {profile.admin && <DeleteButton
+              label={t('delete')}
+              onDelete={() => handleDeleteClick(order._id)} />}
+              </div>
+
               </div>
             </div>
           ))}
