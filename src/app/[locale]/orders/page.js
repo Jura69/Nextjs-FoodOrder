@@ -1,71 +1,67 @@
 "use client";
-import SectionHeaders from "@/components/layout/SectionHeaders";
-import UserTabs from "@/components/layout/UserTabs";
-import { useProfile } from "@/components/UseProfile";
-import { dbTimeForHuman } from "@/libs/datetime";
-import Link from "next/link";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
-import DeleteButton from "@/components/DeleteButton";
 import toast from "react-hot-toast";
+import UserTabs from "@/components/layout/UserTabs";
+import DeleteButton from "@/components/DeleteButton";
+import { useProfile } from "@/components/UseProfile";
 import { cartProductPrice } from "@/components/AppContext";
+import { dbTimeForHuman } from "@/libs/datetime";
+import Pagination from "@/components/Pagination";
 
 export default function OrdersPage() {
   const t = useTranslations("orders.page");
   const [orders, setOrders] = useState([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
   const { loading, data: profile } = useProfile();
+  const [currentPage, setCurrentPage] = useState(1);
+  const ordersPerPage = 6;
 
   useEffect(() => {
     fetchOrders();
   }, []);
 
-  function fetchOrders() {
+  const fetchOrders = async () => {
     setLoadingOrders(true);
-    fetch("/api/orders").then((res) => {
-      res.json().then((orders) => {
-        setOrders(orders.reverse());
-        setLoadingOrders(false);
-      });
-    });
-  }
+    const res = await fetch("/api/orders");
+    const orders = await res.json();
+    setOrders(orders.reverse());
+    setLoadingOrders(false);
+  };
 
-  function calculateOrderTotal(order) {
-    let subtotal = 0;
-    for (const product of order.cartProducts) {
-      subtotal += cartProductPrice(product);
-    }
-    return subtotal + 5; // 5 is the delivery fee
-  }
+  const calculateOrderTotal = (order) => {
+    return order.cartProducts.reduce(
+      (total, product) => total + cartProductPrice(product),
+      5,
+    );
+  };
 
-  async function handleDeleteClick(_id) {
-    const promise = new Promise(async (resolve, reject) => {
-      const response = await fetch('/api/orders?_id='+_id, {
-        method: 'DELETE',
-      });
-      if (response.ok) {
-        resolve();
-      } else {
-        reject();
-      }
-    });
-  
+  const handleDeleteClick = async (_id) => {
+    const promise = fetch("/api/orders?_id=" + _id, { method: "DELETE" });
     await toast.promise(promise, {
-      loading: 'Deleting...',
-      success: 'Deleted',
-      error: 'Error',
+      loading: "Deleting...",
+      success: "Deleted",
+      error: "Error",
     });
-  
     fetchOrders();
-  }
+  };
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   return (
     <section className="mt-8 max-w-3xl mx-auto">
       <UserTabs isAdmin={profile.admin} />
       <div className="mt-8">
         {loadingOrders && <div>Loading orders...</div>}
-        {orders?.length > 0 &&
-          orders.map((order) => (
+        {orders
+          ?.slice(
+            (currentPage - 1) * ordersPerPage,
+            currentPage * ordersPerPage,
+          )
+          .map((order) => (
             <div
               key={order._id}
               className="bg-gray-100 mb-2 p-4 rounded-lg flex flex-col md:flex-row items-center gap-6"
@@ -89,7 +85,7 @@ export default function OrdersPage() {
                     </div>
                   </div>
                   <div className="text-gray-500 text-xs">
-                  {t("total")} ${calculateOrderTotal(order)}
+                    {t("total")} ${calculateOrderTotal(order)}
                   </div>
                 </div>
               </div>
@@ -98,16 +94,23 @@ export default function OrdersPage() {
                   {t("view_order")}
                 </Link>
                 <div>
-              {profile.admin && <DeleteButton
-              label={t('delete')}
-              onDelete={() => handleDeleteClick(order._id)} />}
-              </div>
-
+                  {profile.admin && (
+                    <DeleteButton
+                      label={t("delete")}
+                      onDelete={() => handleDeleteClick(order._id)}
+                    />
+                  )}
+                </div>
               </div>
             </div>
           ))}
+        <Pagination
+          currentPage={currentPage}
+          handlePageChange={handlePageChange}
+          orders={orders}
+          ordersPerPage={ordersPerPage}
+        />
       </div>
     </section>
   );
 }
-

@@ -88,26 +88,30 @@ export default function StaticsPage() {
         <div className="flex mx-auto gap-2 flex-wrap justify-center">
           <div className="flex p-2 items-center border rounded-full">
             <h1 className="flex m-2 p-2 ">{t("start")} </h1>
-            <DatePicker
-              selected={startDate}
-              onChange={(date) => setStartDate(date)}
-              dateFormat="dd/MM/yyyy"
-            />
+            <div className="mx-4 mt-2">
+              <DatePicker
+                selected={startDate}
+                onChange={(date) => setStartDate(date)}
+                dateFormat="dd/MM/yyyy"
+              />
+            </div>
           </div>
           <div className="flex p-2 items-center border rounded-full">
             <h1 className="flex m-2 p-2">{t("end")} </h1>
-            <DatePicker
-              selected={endDate}
-              onChange={(date) => setEndDate(date)}
-              dateFormat="dd/MM/yyyy"
-            />
-          </div>
-          <div className="mt-4">
-            <button onClick={handleFillClick} className="bg-primary text-white">
-              {t("fill")}
-            </button>
+            <div className="mx-4 mt-2">
+              <DatePicker
+                selected={endDate}
+                onChange={(date) => setEndDate(date)}
+                dateFormat="dd/MM/yyyy"
+              />
+            </div>
           </div>
         </div>
+      </div>
+      <div className="max-w-md mt-4 mx-auto">
+        <button onClick={handleFillClick} className="bg-primary text-white">
+          {t("fill")}
+        </button>
       </div>
       <div className="mt-8">
         {orders?.length > 0 ? (
