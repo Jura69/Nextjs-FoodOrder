@@ -9,6 +9,9 @@ module.exports = {
     extend: {
       colors: {
         primary: '#04BFAD',
+        gold: '#FFD700',
+        silver: '#C0C0C0',
+        bronze: '#CD7F32'
       },
     },
   },

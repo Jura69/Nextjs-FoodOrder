@@ -53,3 +53,15 @@ div.tabs > *.active{
 .flying-button-parent button{
     @apply border-primary bg-primary text-white rounded-full;
 }
+
+.top-user.gold {
+    background-color: gold;
+  }
+  
+  .top-user.silver {
+    background-color: silver;
+  }
+  
+  .top-user.bronze {
+    background-color: #cd7f32;
+  }
