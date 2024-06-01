@@ -2,7 +2,6 @@ import { CartContext } from "@/components/AppContext";
 import MenuItemTile from "@/components/menu/MenuItemTile";
 import Image from "next/image";
 import { useContext, useState } from "react";
-import FlyingButton from "react-flying-item";
 import toast from "react-hot-toast";
 import { useTranslations } from "next-intl";
 
@@ -20,18 +19,20 @@ export default function MenuItem(menuItem) {
   const [showPopup, setShowPopup] = useState(false);
   const { addToCart } = useContext(CartContext);
 
-  async function handleAddToCartButtonClick() {
-    console.log('add to cart');
-    const hasOptions = sizes.length > 0 || extraIngredientPrices.length > 0;
-    if (hasOptions && !showPopup) {
+  function handlePreAddToCartButtonClick() {
+    console.log('pre add to cart');
       setShowPopup(true);
       return;
-    }
+  }
+
+  async function handleAddToCartButtonClick() {
+    console.log('add to cart');
     addToCart(menuItem, selectedSize, selectedExtras);
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 500));
     console.log('hiding popup');
     setShowPopup(false);
   }
+
   function handleExtraThingClick(ev, extraThing) {
     const checked = ev.target.checked;
     if (checked) {
@@ -108,15 +109,10 @@ export default function MenuItem(menuItem) {
                   ))}
                 </div>
               )}
-              <FlyingButton
-                targetTop={'5%'}
-                targetLeft={'95%'}
-                src={image}>
-                <div className="primary sticky bottom-2"
-                  onClick={handleAddToCartButtonClick}>
-                  {t('add')} ${selectedPrice}
-                </div>
-              </FlyingButton>
+              <button className="mt-2 bg-primary text-white bottom-2"
+                onClick={handleAddToCartButtonClick}>
+                {t('add')} ${selectedPrice}
+              </button>
               <button
                 className="mt-2"
                 onClick={() => setShowPopup(false)}>
@@ -127,7 +123,7 @@ export default function MenuItem(menuItem) {
         </div>
       )}
       <MenuItemTile
-        onAddToCart={handleAddToCartButtonClick}
+        onPreAddToCart={handlePreAddToCartButtonClick}
         {...menuItem} />
     </>
   );

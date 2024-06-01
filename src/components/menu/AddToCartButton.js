@@ -1,4 +1,3 @@
-import FlyingButton from 'react-flying-item'
 import { useTranslations } from 'next-intl';
 
 export default function AddToCartButton({
@@ -6,21 +5,6 @@ export default function AddToCartButton({
 }) 
 {
   const t = useTranslations('components.menu.AddToCartButton');
-
-  if (!hasSizesOrExtras) {
-    return (
-      <div className="flying-button-parent mt-4">
-        <FlyingButton
-          targetTop={'5%'}
-          targetLeft={'95%'}
-          src={image}>
-          <div onClick={onClick}>
-            {t('add')} ${basePrice}
-          </div>
-        </FlyingButton>
-      </div>
-    );
-  }
   return (
     <button
       type="button"

@@ -1,10 +1,9 @@
-import AddToCartButton from "@/components/menu/AddToCartButton";
+import PreAddToCartButton from "@/components/menu/PreAddToCartButton";
 
-export default function MenuItemTile({onAddToCart, ...item}) {
+export default function MenuItemTile({onPreAddToCart, ...item}) {
   const {image, description, name, basePrice,
     sizes, extraIngredientPrices,
   } = item;
-  const hasSizesOrExtras = sizes?.length > 0 || extraIngredientPrices?.length > 0;
   return (
     <div className="bg-gray-200 p-4 rounded-lg text-center
       group hover:bg-white hover:shadow-md hover:shadow-black/25 transition-all">
@@ -15,10 +14,9 @@ export default function MenuItemTile({onAddToCart, ...item}) {
       <p className="text-gray-500 text-sm line-clamp-3">
         {description}
       </p>
-      <AddToCartButton
+      <PreAddToCartButton
         image={image}
-        hasSizesOrExtras={hasSizesOrExtras}
-        onClick={onAddToCart}
+        onClick={onPreAddToCart}
         basePrice={basePrice}
       />
     </div>

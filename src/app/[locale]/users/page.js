@@ -23,20 +23,14 @@ export default function UsersPage() {
     })
   }
 
-  function handleSearch() {
-    fetchUsers();
-  }
-
   useEffect(() => {
     fetchUsers();
   }, []);
 
-  // Tính toán các mục cho trang hiện tại
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = users.slice(indexOfFirstItem, indexOfLastItem);
 
-  // Cập nhật trang hiện tại
   const handlePageChange = pageNumber => setCurrentPage(pageNumber);
 
   if (loading) {
