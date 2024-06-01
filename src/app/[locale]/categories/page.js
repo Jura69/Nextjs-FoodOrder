@@ -5,12 +5,15 @@ import {useEffect, useState} from "react";
 import {useProfile} from "@/components/UseProfile";
 import toast from "react-hot-toast";
 import {useTranslations} from "next-intl";  
+import Pagination from "@/components/Pagination";
 
 export default function CategoriesPage() {
   const t = useTranslations('categories');
 
   const [categoryName, setCategoryName] = useState('');
   const [categories, setCategories] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage,] = useState(10);
   const {loading:profileLoading, data:profileData} = useProfile();
   const [editedCategory, setEditedCategory] = useState(null);
 
@@ -25,6 +28,14 @@ export default function CategoriesPage() {
       });
     });
   }
+
+  // Tính toán các mục cho trang hiện tại
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = categories.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Cập nhật trang hiện tại
+  const handlePageChange = pageNumber => setCurrentPage(pageNumber);
 
   async function handleCategorySubmit(ev) {
     ev.preventDefault();
@@ -140,6 +151,12 @@ export default function CategoriesPage() {
             </div>
           </div>
         ))}
+        <Pagination
+          currentPage={currentPage}
+          handlePageChange={handlePageChange}
+          items={categories}
+          itemsPerPage={itemsPerPage}
+        />
       </div>
     </section>
   );

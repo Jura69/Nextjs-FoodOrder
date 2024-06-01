@@ -2,7 +2,7 @@ import React from 'react';
 import Left from "@/components/icons/Left";
 import Right from "@/components/icons/Right"; 
 
-const Pagination = ({ currentPage, handlePageChange, orders, ordersPerPage }) => (
+const Pagination = ({ currentPage, handlePageChange, items, itemsPerPage }) => (
   <div className="max-w-sm mx-auto flex justify-center items-center my-4">
     <button
       onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
@@ -13,7 +13,7 @@ const Pagination = ({ currentPage, handlePageChange, orders, ordersPerPage }) =>
 
     {currentPage > 3 && <div className="mx-2">...</div>}
 
-    {[...Array(Math.ceil(orders.length / ordersPerPage)).keys()].slice(currentPage < 3 ? 0 : currentPage - 3, currentPage < 3 ? 5 : currentPage + 2).map(page => (
+    {[...Array(Math.ceil(items.length / itemsPerPage)).keys()].slice(currentPage < 3 ? 0 : currentPage - 3, currentPage < 3 ? 5 : currentPage + 2).map(page => (
       <button
         key={page}
         onClick={() => handlePageChange(page + 1)}
@@ -23,10 +23,10 @@ const Pagination = ({ currentPage, handlePageChange, orders, ordersPerPage }) =>
       </button>
     ))}
 
-    {currentPage < Math.ceil(orders.length / ordersPerPage) - 2 && <div className="mx-2">...</div>}
+    {currentPage < Math.ceil(items.length / itemsPerPage) - 2 && <div className="mx-2">...</div>}
 
     <button
-      onClick={() => currentPage < Math.ceil(orders.length / ordersPerPage) && handlePageChange(currentPage + 1)}
+      onClick={() => currentPage < Math.ceil(items.length / itemsPerPage) && handlePageChange(currentPage + 1)}
       className="flex mx-1 px-3 py-2 rounded-full focus:outline-none bg-white text-gray-700"
     >
       Next <Right/>

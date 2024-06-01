@@ -6,10 +6,13 @@ import Image from "next/image";
 import Link from "next/link";
 import {useEffect, useState} from "react";
 import {useTranslations} from "next-intl";
+import Pagination from "@/components/Pagination";
 
 export default function MenuItemsPage() {
   const t = useTranslations('menu-items.page');
   const [menuItems, setMenuItems] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage,] = useState(6);
   const {loading, data} = useProfile();
 
   useEffect(() => {
@@ -19,6 +22,14 @@ export default function MenuItemsPage() {
       });
     })
   }, []);
+
+  // Tính toán các mục cho trang hiện tại
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = menuItems.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Cập nhật trang hiện tại
+  const handlePageChange = pageNumber => setCurrentPage(pageNumber);
 
   if (loading) {
     return 'Loading user info...';
@@ -42,7 +53,7 @@ export default function MenuItemsPage() {
       <div>
         <h2 className="text-sm text-gray-500 mt-8">{t('edit_menu')}</h2>
         <div className="grid grid-cols-3 gap-2">
-          {menuItems?.length > 0 && menuItems.map(item => (
+          {currentItems?.length > 0 && currentItems.map(item => (
             <Link
               key={item._id}
               href={'/menu-items/edit/'+item._id}
@@ -59,6 +70,12 @@ export default function MenuItemsPage() {
             </Link>
           ))}
         </div>
+        <Pagination
+          currentPage={currentPage}
+          handlePageChange={handlePageChange}
+          items={menuItems}
+          itemsPerPage={itemsPerPage}
+        />
       </div>
     </section>
   );

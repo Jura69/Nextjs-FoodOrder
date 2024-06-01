@@ -16,7 +16,8 @@ export default function OrdersPage() {
   const [loadingOrders, setLoadingOrders] = useState(true);
   const { loading, data: profile } = useProfile();
   const [currentPage, setCurrentPage] = useState(1);
-  const ordersPerPage = 6;
+  const itemsPerPage = 6;
+
 
   useEffect(() => {
     fetchOrders();
@@ -58,8 +59,8 @@ export default function OrdersPage() {
         {loadingOrders && <div>Loading orders...</div>}
         {orders
           ?.slice(
-            (currentPage - 1) * ordersPerPage,
-            currentPage * ordersPerPage,
+            (currentPage - 1) * itemsPerPage,
+            currentPage * itemsPerPage,
           )
           .map((order) => (
             <div
@@ -107,8 +108,8 @@ export default function OrdersPage() {
         <Pagination
           currentPage={currentPage}
           handlePageChange={handlePageChange}
-          orders={orders}
-          ordersPerPage={ordersPerPage}
+          items={orders}
+          itemsPerPage={itemsPerPage}
         />
       </div>
     </section>

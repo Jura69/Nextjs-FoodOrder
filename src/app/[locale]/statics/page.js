@@ -9,14 +9,23 @@ import UserTabs from "@/components/layout/UserTabs";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useTranslations } from "next-intl";
+import Pagination from "@/components/Pagination";
 
 export default function StaticsPage() {
   const t = useTranslations("statics");
   const [orders, setOrders] = useState([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
   const { loading, data: profile } = useProfile();
-  const [startDate, setStartDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(new Date('2023-01-01'));
   const [endDate, setEndDate] = useState(new Date());
+  const [paginatedOrders, setPaginatedOrders] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6; 
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    fetchOrders(startDate, endDate);
+  };
 
   const handleFillClick = () => {
     fetchOrders(startDate, endDate);
@@ -25,6 +34,7 @@ export default function StaticsPage() {
   useEffect(() => {
     fetchOrders();
   }, []);
+
   function fetchOrders(startDate, endDate) {
     setLoadingOrders(true);
     fetch("/api/orders").then((res) => {
@@ -33,8 +43,6 @@ export default function StaticsPage() {
         if (startDate && endDate) {
           const start = startDate.getTime(); // convert to timestamp
           const end = endDate.getTime();
-          console.log("startDate:", startDate.toLocaleDateString("en-GB"));
-          console.log("endDate:", endDate.toLocaleDateString("en-GB"));
           filteredOrders = allOrders.filter((order) => {
             if (!order.createdAt) {
               return false;
@@ -48,10 +56,14 @@ export default function StaticsPage() {
           filteredOrders = allOrders;
         }
         setOrders(filteredOrders.reverse());
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        setPaginatedOrders(filteredOrders.slice(start, end));
         setLoadingOrders(false);
       });
     });
   }
+
   const totalRevenue = orders.reduce((total, order) => {
     let orderTotal = 0;
     if (order.cartProducts && order.paid) {
@@ -114,8 +126,8 @@ export default function StaticsPage() {
         </button>
       </div>
       <div className="mt-8">
-        {orders?.length > 0 ? (
-          orders.map((order) => (
+      {paginatedOrders?.length > 0 ? (
+      paginatedOrders.map((order) => (
             <div
               key={order._id}
               className="bg-gray-100 mb-2 p-4 rounded-lg flex flex-col md:flex-row items-center gap-6"
@@ -153,6 +165,12 @@ export default function StaticsPage() {
         ) : (
           <div>{t("not_found")}</div>
         )}
+        <Pagination
+        currentPage={currentPage}
+        handlePageChange={handlePageChange}
+        items={orders}
+        itemsPerPage={itemsPerPage}
+      />
       </div>
     </section>
   );
