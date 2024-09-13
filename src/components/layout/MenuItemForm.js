@@ -18,6 +18,7 @@ export default function MenuItemForm({onSubmit,menuItem}) {
     extraIngredientPrices,
     setExtraIngredientPrices,
   ] = useState(menuItem?.extraIngredientPrices || []);
+  const [isNull, setIsNull] = useState(false);
 
   useEffect(() => {
     fetch('/api/categories').then(res => {
